@@ -9,6 +9,7 @@ struct ExpenseDetailView: View {
     @State private var showingImageFullScreen = false
     
     var onSave: (() -> Void)?
+    var onDisappearCallback: (() -> Void)?
     
     var body: some View {
         ScrollView {
@@ -54,10 +55,13 @@ struct ExpenseDetailView: View {
             Image(systemName: "pencil")
         })
         .sheet(isPresented: $showingEditView) {
-            AddExpenseView(viewModel: ExpenseViewModel(viewContext: expense.managedObjectContext!), userViewModel: userViewModel, expenseToEdit: expense)
+            AddExpenseView(viewModel: ExpenseViewModel(viewContext: expense.managedObjectContext!), expenseToEdit: expense, userViewModel: userViewModel)
                 .onDisappear {
                     onSave?()
                 }
+        }
+        .onDisappear {
+            onSave?()
         }
     }
     

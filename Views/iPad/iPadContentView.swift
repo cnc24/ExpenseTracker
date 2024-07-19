@@ -16,6 +16,7 @@ struct iPadContentView: View {
     @State private var showingSettingsView = false
     @State private var showingProAlert = false
     @State private var proAlertMessage = ""
+    @State private var showingDocumentPicker = false
 
     enum SidebarOption: Hashable {
         case expenses
@@ -32,12 +33,12 @@ struct iPadContentView: View {
         NavigationView {
             SidebarView(selectedView: $selectedView)
             contentView(for: selectedView)
+                .navigationBarItems(trailing: selectedView == .expenses ? AnyView(trailingNavigationBarItems) : AnyView(EmptyView()))
                 .onAppear {
                     if selectedView == .expenses {
-                        navigationBarItems(trailing: trailingNavigationBarItems)
+                        viewModel.fetchExpenses() // Ensure expenses are fetched on view appear
                     }
                 }
-                .navigationBarItems(trailing: selectedView == .expenses ? AnyView(trailingNavigationBarItems) : AnyView(EmptyView()))
         }
         .navigationViewStyle(DoubleColumnNavigationViewStyle())
         .alert(isPresented: $showingProAlert) {
@@ -47,9 +48,6 @@ struct iPadContentView: View {
                       selectedView = .expenses
                       UIApplication.shared.hideSidebar()
                   })
-        }
-        .onChange(of: selectedView) { _ in
-            UIApplication.shared.hideSidebar()
         }
     }
 
@@ -68,6 +66,9 @@ struct iPadContentView: View {
                 showingCameraView: $showingCameraView
             )
             .environment(\.managedObjectContext, viewContext)
+            .onChange(of: showingAddExpenseView) {
+                viewModel.fetchExpenses()
+            }
         case .analyse:
             if userViewModel.isProUser {
                 iPadAnalyseView()

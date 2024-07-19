@@ -31,9 +31,7 @@ struct iPadAnalyseView: View {
             if selectedAnalysisType == .month {
                 monthAnalysisView
             } else {
-                Text(NSLocalizedString("No Expenses", comment: "Label for no expenses"))
-                    .foregroundColor(.secondary)
-                    .padding()
+                categoryAnalysisView
             }
             
             Spacer()
@@ -71,6 +69,18 @@ struct iPadAnalyseView: View {
                         }
                     }
                 }
+            } else {
+                Text(NSLocalizedString("No Expenses", comment: "Label for no expenses"))
+                    .foregroundColor(.secondary)
+                    .padding()
+            }
+        }
+    }
+    
+    private var categoryAnalysisView: some View {
+        VStack{
+            if let categoryData = calculateCategoryData() {
+                    
             } else {
                 Text(NSLocalizedString("No Expenses", comment: "Label for no expenses"))
                     .foregroundColor(.secondary)

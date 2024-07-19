@@ -41,7 +41,7 @@ struct iPhoneContentView: View {
             }
         }
         .sheet(isPresented: $showingAddExpenseView) {
-            AddExpenseView(viewModel: viewModel, userViewModel: userViewModel, expenseToEdit: editingExpense)
+            AddExpenseView(viewModel: viewModel, expenseToEdit: editingExpense, userViewModel: userViewModel)
                 .environment(\.managedObjectContext, viewContext)
                 .onDisappear {
                     viewModel.fetchExpenses()
