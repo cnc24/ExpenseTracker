@@ -4,7 +4,11 @@ import Combine
 import UIKit
 
 class ExpenseViewModel: ObservableObject {
-    @Published var expenses: [Expense] = []
+    @Published var expenses: [Expense] = [] {
+        didSet {
+            updateDisplayedPeriodAndTotal()
+        }
+    }
     @Published var visibleExpenseIds: Set<UUID> = []
     @Published var totalAmount: Double = 0.0
     @Published var showAnnualTotal = false
@@ -77,13 +81,7 @@ class ExpenseViewModel: ObservableObject {
     }
     
     private func calculateAnnualTotal() -> Double {
-        let calendar = Calendar.current
-        let currentYear = calendar.component(.year, from: Date())
-        let annualExpenses = expenses.filter {
-            let year = calendar.component(.year, from: $0.date ?? Date())
-            return year == currentYear
-        }
-        return calculateTotal(expenses: annualExpenses)
+        return expenses.reduce(0) { $0 + $1.amount }
     }
     
     private func calculateDisplayedPeriod(expenses: [Expense]) {
